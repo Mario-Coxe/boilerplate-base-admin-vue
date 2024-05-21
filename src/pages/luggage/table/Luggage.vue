@@ -1,13 +1,11 @@
 <template>
-    <BaseTable :columns="columns" :data="luggageData" />
+    <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-
 import BaseTable from '../../../components/base-admin/BaseTable.vue';
 import luggageTypeService from '../luggageTypeService';
-
 
 export default defineComponent({
     name: 'LuggageTable',
@@ -25,9 +23,13 @@ export default defineComponent({
                 { key: 'is_deleted', label: 'Deleted' },
                 { key: 'created_at', label: 'Created At' },
                 { key: 'updated_at', label: 'Updated At' },
-                { key: 'actions', label: 'Actions' }
+                { key: 'actions', label: 'Actions' } 
             ],
             luggageData: [],
+            formColumns: [
+                { key: 'description', label: 'Description', required: true },
+                { key: 'slug', label: 'Slug' }
+            ],
             loading: true
         };
     },
