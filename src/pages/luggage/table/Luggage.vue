@@ -1,18 +1,17 @@
 <!-- LuggageTable.vue -->
 <template>
-    <div class="luggage-table">
-        <BaseTable :columns="columns" :data="luggageData">
-            <template #description="{ row }">
-                <strong>{{ row.description }}</strong>
-            </template>
-            <template #created_at="{ row }">
-                <span>{{ formatDate(row.created_at) }}</span>
-            </template>
-            <template #updated_at="{ row }">
-                <span>{{ formatDate(row.updated_at) }}</span>
-            </template>
-        </BaseTable>
-    </div>
+    <BaseTable :columns="columns" :data="luggageData">
+        <template #description="{ row }">
+            <strong>{{ row.description }}</strong>
+        </template>
+        <template #created_at="{ row }">
+            <span>{{ formatDate(row.created_at) }}</span>
+        </template>
+        <template #updated_at="{ row }">
+            <span>{{ formatDate(row.updated_at) }}</span>
+        </template>
+    </BaseTable>
+
 </template>
 
 <script>
@@ -29,11 +28,9 @@ export default {
         return {
             columns: [
                 { key: 'id', label: 'ID' },
-                { key: 'uuid', label: 'UUID' },
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
                 { key: 'is_active', label: 'Active' },
-                { key: 'is_deleted', label: 'Deleted' },
                 { key: 'created_at', label: 'Created At' },
                 { key: 'updated_at', label: 'Updated At' }
             ],
@@ -60,8 +57,4 @@ export default {
 }
 </script>
 
-<style scoped>
-.luggage-table {
-    margin: 20px;
-}
-</style>
+<style scoped></style>
