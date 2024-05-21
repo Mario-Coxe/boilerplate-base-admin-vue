@@ -1,52 +1,53 @@
 <template>
     <VaCard>
         <VaCardContent>
+            <!-- Barra de Ações -->
             <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
-                <div class="flex flex-col md:flex-row gap-2 justify-start">
-                    <VaInput placeholder="Search">
-                        <template #prependInner>
-                            <VaIcon name="search" color="secondary" size="small" />
-                        </template>
-                    </VaInput>
-                </div>
-                <VaButton>Add User</VaButton>
+                <VaInput v-model="searchQuery" placeholder="Search">
+                    <template #prependInner>
+                        <VaIcon name="search" color="secondary" size="small" />
+                    </template>
+                </VaInput>
+                <VaButton @click="openModal">Adicionar Item</VaButton>
             </div>
 
-            <div class="va-table-responsive">
-                <table class="va-table">
-                    <thead class="bg-gray-200">
-                        <tr>
-                            <th v-for="column in columns" :key="column.key"
-                                class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">{{
-                                    column.label }}</th>
-                            <th class="px-4 py-2 text-left text-xs font-medium text-gray-600 uppercase">Ações
-                            </th>
-                        </tr>
-                    </thead>
-
-                    <tbody class="bg-white divide-y divide-gray-200">
-                        <tr v-for="(row, index) in data" :key="row.id">
-                            <td v-for="column in columns" :key="column.key" class="px-4 py-2 whitespace-nowrap">
-                                {{
-                                    row[column.key] }}</td>
-                            <td class="px-4 py-2 whitespace-nowrap">
-                                <VaButton preset="primary" size="small" icon="mso-edit" aria-label="Edit user" />
-                                <VaButton preset="primary" size="small" icon="mso-delete" color="danger"
-                                    aria-label="Delete user" />
-
-                            </td>
-                        </tr>
-                    </tbody>
-                </table>
-
-            </div>
-
+            <!-- Tabela -->
+            <VaDataTable :items="filteredData" :columns="columns" class="va-table">
+                <template #cell(description)="{ value }">
+                    <strong>{{ value }}</strong>
+                </template>
+                <template #cell(created_at)="{ value }">
+                    <span>{{ formatDate(value) }}</span>
+                </template>
+                <template #cell(updated_at)="{ value }">
+                    <span>{{ formatDate(value) }}</span>
+                </template>
+                <template #cell(actions)="{ row }">
+                    <VaButton @click="editItem(row)" preset="primary" size="small" icon="mso-edit"
+                        aria-label="Edit item" />
+                    <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="mso-delete" color="danger"
+                        aria-label="Delete item" />
+                </template>
+            </VaDataTable>
         </VaCardContent>
     </VaCard>
+
+    <!-- Modal -->
+    <VaModal v-model="isModalOpen">
+        <template #header>{{ isEditing ? 'Editar Item' : 'Adicionar Item' }}</template>
+        <VaForm @submit.prevent="handleSubmit">
+            <VaInput v-model="formData.description" label="Description" required />
+            <!-- Outros campos do formulário aqui -->
+            <VaButton type="submit">{{ isEditing ? 'Salvar' : 'Adicionar' }}</VaButton>
+        </VaForm>
+    </VaModal>
 </template>
 
 <script>
-export default {
+import { defineComponent } from 'vue';
+
+
+export default defineComponent({
     name: 'BaseTable',
     props: {
         columns: {
@@ -60,13 +61,19 @@ export default {
     },
     data() {
         return {
-            default: true,
+            searchQuery: '',
             isModalOpen: false,
             isEditing: false,
             formData: {
                 description: ''
             }
         };
+    },
+    computed: {
+        filteredData() {
+            if (!this.searchQuery) return this.data;
+            return this.data.filter(item => Object.values(item).some(value => value.toString().toLowerCase().includes(this.searchQuery.toLowerCase())));
+        }
     },
     methods: {
         openModal() {
@@ -81,7 +88,9 @@ export default {
         },
         handleSubmit() {
             if (this.isEditing) {
+                // Lógica para atualizar o item
             } else {
+                // Lógica para adicionar o novo item
             }
             this.closeModal();
         },
@@ -91,10 +100,18 @@ export default {
             this.openModal();
         },
         deleteItem(id) {
+            // Lógica para deletar o item
         },
-
+        formatDate(date) {
+            if (!date) return 'N/A';
+            return new Date(date).toLocaleString();
+        }
     }
-}
+});
 </script>
 
-<style></style>
+<style scoped>
+.va-table {
+    width: 100%;
+}
+</style>

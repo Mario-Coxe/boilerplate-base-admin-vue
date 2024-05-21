@@ -1,25 +1,15 @@
-<!-- LuggageTable.vue -->
 <template>
-    <BaseTable :columns="columns" :data="luggageData">
-        <template #description="{ row }">
-            <strong>{{ row.description }}</strong>
-        </template>
-        <template #created_at="{ row }">
-            <span>{{ formatDate(row.created_at) }}</span>
-        </template>
-        <template #updated_at="{ row }">
-            <span>{{ formatDate(row.updated_at) }}</span>
-        </template>
-    </BaseTable>
-
+    <BaseTable :columns="columns" :data="luggageData" />
 </template>
 
 <script>
+import { defineComponent } from 'vue';
+
 import BaseTable from '../../../components/base-admin/BaseTable.vue';
 import luggageTypeService from '../luggageTypeService';
 
 
-export default {
+export default defineComponent({
     name: 'LuggageTable',
     components: {
         BaseTable
@@ -28,13 +18,17 @@ export default {
         return {
             columns: [
                 { key: 'id', label: 'ID' },
+                { key: 'uuid', label: 'UUID' },
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
                 { key: 'is_active', label: 'Active' },
+                { key: 'is_deleted', label: 'Deleted' },
                 { key: 'created_at', label: 'Created At' },
-                { key: 'updated_at', label: 'Updated At' }
+                { key: 'updated_at', label: 'Updated At' },
+                { key: 'actions', label: 'Actions' }
             ],
-            luggageData: []
+            luggageData: [],
+            loading: true
         };
     },
     created() {
@@ -47,14 +41,10 @@ export default {
                 this.luggageData = response.data.data;
             } catch (error) {
                 console.error('Error fetching luggage data:', error);
+            } finally {
+                this.loading = false;
             }
-        },
-        formatDate(date) {
-            if (!date) return 'N/A';
-            return new Date(date).toLocaleString();
         }
     }
-}
+});
 </script>
-
-<style scoped></style>
