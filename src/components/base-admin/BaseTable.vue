@@ -13,8 +13,10 @@
                 <VaButton @click="openModal">Adicionar Item</VaButton>
             </div>
 
-            <!-- Tabela -->
-            <VaDataTable :items="paginatedData" :columns="columns" class="va-table">
+            <VaDataTable :items="paginatedData" :columns="columns" class="va-table" v-if="!loading">
+                <template #cell(id)="{ index }">
+                    <span>{{ startIndex + index + 1 }}</span>
+                </template>
                 <template #cell(description)="{ value }">
                     <strong>{{ value }}</strong>
                 </template>
@@ -31,21 +33,23 @@
                 </template>
             </VaDataTable>
 
+
+
             <!-- Paginação -->
-            <VaPagination v-if="totalPages > 1" v-model:page="currentPage" :total="totalPages" class="mt-4" />
+            <VaPagination v-model:page="currentPage" :total="totalPages" class="mt-4" />
+
+            <!-- Loader -->
+            <!-- <div v-if="loading" class="loader">Loading...</div> -->
         </VaCardContent>
     </VaCard>
 
-    <!-- Modal -->
     <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
         @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
 </template>
 
 <script>
 import { defineComponent } from 'vue';
-//import ItemModal from './ItemModal.vue';
-
-import ItemModal from './parts/ItemModal.vue';
+import ItemModal from './parts-components/ItemModal.vue';
 
 export default defineComponent({
     name: 'BaseTable',
@@ -55,16 +59,24 @@ export default defineComponent({
     props: {
         columns: {
             type: Array,
-            required: true
+            required: true,
         },
         data: {
             type: Array,
-            required: true
+            required: true,
         },
         formColumns: {
             type: Array,
-            required: true
-        }
+            required: true,
+        },
+        fetchData: {
+            type: Function,
+            required: true,
+        },
+        loading: {
+            type: Boolean,
+            default: false,
+        },
     },
     data() {
         return {
@@ -74,25 +86,24 @@ export default defineComponent({
             isEditing: false,
             formData: this.getInitialFormData(),
             currentPage: 1,
-            itemsPerPage: 10
+            itemsPerPage: 10,
+            totalPages: 1,
         };
     },
     computed: {
         filterOptions() {
-            return this.columns.map(column => ({ label: column.label, value: column.label }));
+            return this.columns.map((column) => ({ label: column.label, value: column.key }));
         },
         filteredData() {
             let filtered = this.data;
-
             if (this.searchQuery) {
-                filtered = filtered.filter(item => {
+                filtered = filtered.filter((item) => {
                     if (this.selectedColumn) {
                         return item[this.selectedColumn]?.toString().toLowerCase().includes(this.searchQuery.toLowerCase());
                     }
-                    return Object.values(item).some(value => value.toString().toLowerCase().includes(this.searchQuery.toLowerCase()));
+                    return Object.values(item).some((value) => value.toString().toLowerCase().includes(this.searchQuery.toLowerCase()));
                 });
             }
-
             return filtered;
         },
         paginatedData() {
@@ -100,9 +111,20 @@ export default defineComponent({
             const end = start + this.itemsPerPage;
             return this.filteredData.slice(start, end);
         },
-        totalPages() {
-            return Math.ceil(this.filteredData.length / this.itemsPerPage);
-        }
+        startIndex() {
+            return (this.currentPage - 1) * this.itemsPerPage;
+        },
+    },
+    watch: {
+        currentPage() {
+            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+        },
+        itemsPerPage() {
+            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+        },
+        searchQuery() {
+            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+        },
     },
     methods: {
         openModal() {
@@ -116,11 +138,9 @@ export default defineComponent({
         },
         handleSubmit() {
             if (this.isEditing) {
-                // Lógica para atualizar o item
-                console.log("Updating item:", this.formData);
+                // Chame a API para atualizar o item e, em seguida, buscar os dados
             } else {
-                // Lógica para adicionar o novo item
-                console.log("Adding item:", this.formData);
+                // Chame a API para adicionar o item e, em seguida, buscar os dados
             }
             this.closeModal();
         },
@@ -129,9 +149,16 @@ export default defineComponent({
             this.isEditing = true;
             this.openModal();
         },
-        deleteItem(id) {
-            // Lógica para deletar o item
-            console.log("Deleting item with id:", id);
+        async deleteItem(id) {
+            // Chame a API para deletar o item e, em seguida, buscar os dados
+            try {
+                // Chame a função de remoção do serviço
+                await this.remove(id);
+                // Atualize os dados após a remoção
+                await this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+            } catch (error) {
+                console.error('Error deleting item:', error);
+            }
         },
         formatDate(date) {
             if (!date) return 'N/A';
@@ -142,13 +169,18 @@ export default defineComponent({
                 acc[column.key] = '';
                 return acc;
             }, {});
-        }
-    }
+        },
+    },
 });
 </script>
 
 <style scoped>
 .va-table {
     width: 100%;
+}
+
+.loader {
+    text-align: center;
+    padding: 20px;
 }
 </style>

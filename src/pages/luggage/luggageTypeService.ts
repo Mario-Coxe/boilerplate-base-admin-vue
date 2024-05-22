@@ -7,6 +7,14 @@ const luggageTypeService = axios.create({
   },
 });
 
+interface PaginationParams {
+  search?: string;
+  lastPage?: number;
+  page?: number;
+  perPage?: number;
+  total?: number;
+}
+
 interface LuggageType {
   uuid: string;
   id: number;
@@ -18,14 +26,6 @@ interface LuggageType {
   updated_at: string;
 }
 
-interface PaginationParams {
-  search?: string;
-  lastPage?: number;
-  page?: number;
-  perPage?: number;
-  total?: number;
-}
-
 interface PaginatedResponse<T> {
   total: number;
   perPage: number;
@@ -34,27 +34,32 @@ interface PaginatedResponse<T> {
   data: T[];
 }
 
+const getRecords = (params: PaginationParams = {}) => {
+  const queryParams = new URLSearchParams({
+    search: params.search || '',
+    lastPage: params.lastPage?.toString() || '0',
+    page: params.page?.toString() || '1',
+    perPage: params.perPage?.toString() || '10',
+    total: params.total?.toString() || '0'
+  }).toString();
+  return luggageTypeService.get<PaginatedResponse<LuggageType>>(`?${queryParams}`);
+};
+
+const create = (data: any) => {
+  return luggageTypeService.post('', data);
+};
+
+const update = (id: number, data: any) => {
+  return luggageTypeService.put(`/${id}`, data);
+};
+
+const remove = (id: number) => {
+  return luggageTypeService.delete(`/${id}`);
+};
+
 export default {
-  getRecords(params: PaginationParams = {}) {
-    const queryParams = new URLSearchParams({
-      search: params.search || '',
-      lastPage: params.lastPage?.toString() || '0',
-      page: params.page?.toString() || '1',
-      perPage: params.perPage?.toString() || '10',
-      total: params.total?.toString() || '0'
-    }).toString();
-    return luggageTypeService.get<PaginatedResponse<LuggageType>>(`?${queryParams}`);
-  },
-
-  create(endpoint: string, data: any) {
-    return luggageTypeService.post(endpoint, data);
-  },
-
-  update(endpoint: string, data: any) {
-    return luggageTypeService.put(endpoint, data);
-  },
-
-  delete(endpoint: string) {
-    return luggageTypeService.delete(endpoint);
-  },
+  getRecords,
+  create,
+  update,
+  remove,
 };
