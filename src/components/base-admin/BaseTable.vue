@@ -36,7 +36,8 @@
 
 
             <!-- Paginação -->
-            <VaPagination v-model:page="currentPage" :total="totalPages" class="mt-4" />
+            <VaPagination v-model:page="currentPage" :total="totalPages" class="mt-4" buttons-preset="secondary"
+                :boundary-links="true" :direction-links="true" />
 
             <!-- Loader -->
             <!-- <div v-if="loading" class="loader">Loading...</div> -->

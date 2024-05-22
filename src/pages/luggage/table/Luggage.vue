@@ -1,6 +1,11 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :data="luggageDataWithIndex" :formColumns="formColumns" :fetchData="fetchData" />
+        <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" :fetchData="fetchData" />
+        <div v-if="totalPages > 1" class="pagination">
+            <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+            <span>Page {{ currentPage }} of {{ totalPages }}</span>
+            <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+        </div>
     </div>
 </template>
 
@@ -39,10 +44,14 @@ export default defineComponent({
     data() {
         return {
             columns: [
-                { key: 'index', label: 'ID' },
+                { key: 'index', label: 'index' },
+                { key: 'uuid', label: 'UUID' },
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
+                { key: 'is_active', label: 'Active' },
+                { key: 'is_deleted', label: 'Deleted' },
                 { key: 'created_at', label: 'Created At' },
+                { key: 'updated_at', label: 'Updated At' },
                 { key: 'actions', label: 'Actions' },
             ] as Column[],
             luggageData: [] as LuggageType[],
@@ -55,13 +64,6 @@ export default defineComponent({
             totalPages: 1,
         };
     },
-    computed: {
-        luggageDataWithIndex() {
-            return this.luggageData.map((item, index) => {
-                return { ...item, index: (this.currentPage - 1) * this.itemsPerPage + index + 1 };
-            });
-        }
-    },
     methods: {
         async fetchData(params = {}) {
             try {
@@ -72,9 +74,30 @@ export default defineComponent({
                 console.error('Error fetching luggage data:', error);
             }
         },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage });
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+                this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage });
+            }
+        },
+        getFirstRecordIndex() {
+            return (this.currentPage - 1) * this.itemsPerPage + 1;
+        }
     },
     created() {
         this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage });
     },
 });
 </script>
+
+<style>
+.pagination {
+    margin-top: 20px;
+}
+</style>
