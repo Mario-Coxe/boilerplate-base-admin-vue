@@ -20,9 +20,9 @@ export default {
     },
     {
       name: 'users',
-      displayName: 'menu.users',
+      displayName: 'Luggages',
       meta: {
-        icon: 'group',
+        icon: 'luggage',
       },
     },
     {

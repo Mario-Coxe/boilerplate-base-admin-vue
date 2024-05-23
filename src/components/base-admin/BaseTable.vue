@@ -13,13 +13,16 @@
             </div>
 
             <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
-                <template #cell(index="{ index }" )>
-                    <span>{{ getRecordIndex(1) }}</span>
+                <template #cell(index)="{ index }">
+                    <span>{{ getRecordIndex(index) }}</span>
                 </template>
                 <template #cell(actions)="{ row }">
-                    <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit" aria-label="Edit item" />
-                    <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="delete" color="danger"
-                        aria-label="Delete item" />
+                    <div v-show="showActions">
+                        <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit"
+                            aria-label="Edit item" />
+                        <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="delete" color="danger"
+                            aria-label="Delete item" />
+                    </div>
                 </template>
             </VaDataTable>
 
@@ -36,7 +39,6 @@
     <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
         @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
 </template>
-
 
 <script>
 import { defineComponent } from 'vue';
@@ -63,6 +65,10 @@ export default defineComponent({
         loading: {
             type: Boolean,
             default: false,
+        },
+        showActions: {
+            type: Boolean,
+            default: true,
         },
     },
     data() {
@@ -101,15 +107,15 @@ export default defineComponent({
         },
     },
     watch: {
-        // currentPage() {
-        //     this.loadData();
-        // },
-        // itemsPerPage() {
-        //     this.loadData();
-        // },
-        // searchQuery() {
-        //     this.loadData();
-        // },
+        currentPage() {
+            this.loadData();
+        },
+        itemsPerPage() {
+            this.loadData();
+        },
+        searchQuery() {
+            this.loadData();
+        },
     },
     methods: {
         async loadData() {
@@ -177,7 +183,6 @@ export default defineComponent({
         getRecordIndex(index) {
             return (this.currentPage - 1) * this.itemsPerPage + index + 1;
         },
-
     },
     created() {
         this.loadData();

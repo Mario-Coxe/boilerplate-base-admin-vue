@@ -1,6 +1,7 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" :fetchData="fetchData" :loading="loading" />
+        <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" :fetchData="fetchData"
+            :loading="loading" :showActions="showActions" />
     </div>
 </template>
 
@@ -25,14 +26,15 @@ export default defineComponent({
                 { key: 'is_deleted', label: 'Deleted' },
                 { key: 'created_at', label: 'Created At' },
                 { key: 'updated_at', label: 'Updated At' },
-                { key: 'actions', label: 'Actions' },
+                //{ key: 'actions', label: 'Actions' },
             ],
             luggageData: [],
             formColumns: [
                 { key: 'description', label: 'Description', required: true },
                 { key: 'slug', label: 'Slug' },
             ],
-            loading: false, 
+            loading: false,
+            showActions: false, 
         };
     },
     methods: {
@@ -40,9 +42,6 @@ export default defineComponent({
             try {
                 const response = await luggageTypeService.getRecords(params);
                 this.luggageData = response.data.data;
-
-                console.log(this.luggageData)
-
                 return response;
             } catch (error) {
                 console.error('Error fetching luggage data:', error);
