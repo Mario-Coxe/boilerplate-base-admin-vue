@@ -14,8 +14,13 @@
             </div>
 
             <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
-                <template #cell(index)="{ index }">
-                    <span>{{ getRecordIndex(index) }}</span>
+                <template #cell(index="{ index }" )>
+                    <span>{{ getRecordIndex(1) }}</span>
+                </template>
+                <template #cell(actions)="{ row }">
+                    <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit" aria-label="Edit item" />
+                    <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="delete" color="danger"
+                        aria-label="Delete item" />
                 </template>
             </VaDataTable>
 
@@ -26,13 +31,13 @@
                 <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
             </div>
 
-
         </VaCardContent>
     </VaCard>
 
     <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
         @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
 </template>
+
 
 <script>
 import { defineComponent } from 'vue';
@@ -173,6 +178,7 @@ export default defineComponent({
         getRecordIndex(index) {
             return (this.currentPage - 1) * this.itemsPerPage + index + 1;
         },
+
     },
     created() {
         this.loadData();
