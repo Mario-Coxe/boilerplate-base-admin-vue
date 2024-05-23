@@ -13,34 +13,20 @@
                 <VaButton @click="openModal">Adicionar Item</VaButton>
             </div>
 
-            <VaDataTable :items="paginatedData" :columns="columns" class="va-table" v-if="!loading">
-                <template #cell(id)="{ index }">
-                    <span>{{ startIndex + index + 1 }}</span>
-                </template>
-                <template #cell(description)="{ value }">
-                    <strong>{{ value }}</strong>
-                </template>
-                <template #cell(created_at)="{ value }">
-                    <span>{{ formatDate(value) }}</span>
-                </template>
-                <template #cell(updated_at)="{ value }">
-                    <span>{{ formatDate(value) }}</span>
-                </template>
-                <template #cell(actions)="{ row }">
-                    <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit" aria-label="Edit item" />
-                    <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="delete" color="danger"
-                        aria-label="Delete item" />
+            <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
+                <template #cell(index)="{ index }">
+                    <span>{{ getRecordIndex(index) }}</span>
                 </template>
             </VaDataTable>
 
-
-
             <!-- Paginação -->
-            <VaPagination v-model:page="currentPage" :total="totalPages" class="mt-4" buttons-preset="secondary"
-                :boundary-links="true" :direction-links="true" />
+            <div v-if="totalPages > 1" class="pagination">
+                <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+                <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+            </div>
 
-            <!-- Loader -->
-            <!-- <div v-if="loading" class="loader">Loading...</div> -->
+
         </VaCardContent>
     </VaCard>
 
@@ -59,10 +45,6 @@ export default defineComponent({
     },
     props: {
         columns: {
-            type: Array,
-            required: true,
-        },
-        data: {
             type: Array,
             required: true,
         },
@@ -89,6 +71,7 @@ export default defineComponent({
             currentPage: 1,
             itemsPerPage: 10,
             totalPages: 1,
+            tableData: [],
         };
     },
     computed: {
@@ -96,7 +79,7 @@ export default defineComponent({
             return this.columns.map((column) => ({ label: column.label, value: column.key }));
         },
         filteredData() {
-            let filtered = this.data;
+            let filtered = this.tableData;
             if (this.searchQuery) {
                 filtered = filtered.filter((item) => {
                     if (this.selectedColumn) {
@@ -112,22 +95,29 @@ export default defineComponent({
             const end = start + this.itemsPerPage;
             return this.filteredData.slice(start, end);
         },
-        startIndex() {
-            return (this.currentPage - 1) * this.itemsPerPage;
-        },
     },
     watch: {
         currentPage() {
-            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+            this.loadData();
         },
         itemsPerPage() {
-            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+            this.loadData();
         },
         searchQuery() {
-            this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+            this.loadData();
         },
     },
     methods: {
+        async loadData() {
+            const params = {
+                page: this.currentPage,
+                perPage: this.itemsPerPage,
+                search: this.searchQuery,
+            };
+            const response = await this.fetchData(params);
+            this.tableData = response.data.data;
+            this.totalPages = response.data.lastPage;
+        },
         openModal() {
             this.formData = this.getInitialFormData();
             this.isModalOpen = true;
@@ -151,14 +141,23 @@ export default defineComponent({
             this.openModal();
         },
         async deleteItem(id) {
-            // Chame a API para deletar o item e, em seguida, buscar os dados
             try {
-                // Chame a função de remoção do serviço
                 await this.remove(id);
-                // Atualize os dados após a remoção
-                await this.fetchData({ page: this.currentPage, perPage: this.itemsPerPage, search: this.searchQuery });
+                await this.loadData();
             } catch (error) {
                 console.error('Error deleting item:', error);
+            }
+        },
+        prevPage() {
+            if (this.currentPage > 1) {
+                this.currentPage--;
+                this.loadData();
+            }
+        },
+        nextPage() {
+            if (this.currentPage < this.totalPages) {
+                this.currentPage++;
+                this.loadData();
             }
         },
         formatDate(date) {
@@ -171,6 +170,12 @@ export default defineComponent({
                 return acc;
             }, {});
         },
+        getRecordIndex(index) {
+            return (this.currentPage - 1) * this.itemsPerPage + index + 1;
+        },
+    },
+    created() {
+        this.loadData();
     },
 });
 </script>
@@ -178,6 +183,13 @@ export default defineComponent({
 <style scoped>
 .va-table {
     width: 100%;
+}
+
+.pagination {
+    margin-top: 20px;
+    display: flex;
+    justify-content: center;
+    gap: 10px;
 }
 
 .loader {
