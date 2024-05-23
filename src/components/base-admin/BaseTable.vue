@@ -1,7 +1,6 @@
 <template>
     <VaCard>
         <VaCardContent>
-            <!-- Barra de Ações -->
             <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
                 <VaInput v-model="searchQuery" placeholder="Search">
                     <template #prependInner>
@@ -102,15 +101,15 @@ export default defineComponent({
         },
     },
     watch: {
-        currentPage() {
-            this.loadData();
-        },
-        itemsPerPage() {
-            this.loadData();
-        },
-        searchQuery() {
-            this.loadData();
-        },
+        // currentPage() {
+        //     this.loadData();
+        // },
+        // itemsPerPage() {
+        //     this.loadData();
+        // },
+        // searchQuery() {
+        //     this.loadData();
+        // },
     },
     methods: {
         async loadData() {
