@@ -8,10 +8,10 @@
 <script>
 import { defineComponent } from 'vue';
 import BaseTable from '../../../components/base-admin/BaseTable.vue';
-import luggageTypeService from '../luggageTypeService';
+import colorsTypeService from '../colorsTypeService';
 
 export default defineComponent({
-    name: 'LuggageTable',
+    name: 'ColorsTable',
     components: {
         BaseTable,
     },
@@ -20,26 +20,27 @@ export default defineComponent({
             columns: [
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
+                { key: 'value', label: 'Value' },
                 { key: 'created_at', label: 'Created At' },
-                //{ key: 'actions', label: 'Actions' },
+                { key: 'actions', label: 'Actions' },
             ],
             luggageData: [],
             formColumns: [
                 { key: 'description', label: 'Description', required: true },
-                { key: 'slug', label: 'Slug' },
+                { key: 'value', label: 'Value' },
             ],
             loading: false,
-            showActions: false,
+            showActions: true,
         };
     },
     methods: {
         async fetchData(params = {}) {
             try {
-                const response = await luggageTypeService.getRecords(params);
+                const response = await colorsTypeService.getRecords(params);
                 this.luggageData = response.data.data;
                 return response;
             } catch (error) {
-                console.error('Error fetching luggage data:', error);
+                console.error('Error fetching colors data:', error);
                 throw error;
             }
         },

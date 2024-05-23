@@ -21,16 +21,16 @@ const routes: Array<RouteRecordRaw> = [
         path: 'dashboard',
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
       },
-      {
-        name: 'settings',
-        path: 'settings',
-        component: () => import('../pages/settings/Settings.vue'),
-      },
-      {
-        name: 'preferences',
-        path: 'preferences',
-        component: () => import('../pages/preferences/Preferences.vue'),
-      },
+      // {
+      //   name: 'settings',
+      //   path: 'settings',
+      //   component: () => import('../pages/settings/Settings.vue'),
+      // },
+      // {
+      //   name: 'preferences',
+      //   path: 'preferences',
+      //   component: () => import('../pages/preferences/Preferences.vue'),
+      // },
       {
         name: 'users',
         path: 'users',
@@ -40,7 +40,8 @@ const routes: Array<RouteRecordRaw> = [
       {
         name: 'projects',
         path: 'projects',
-        component: () => import('../pages/projects/ProjectsPage.vue'),
+          component: () => import('../pages/colors/table/Colors.vue')
+        //component: () => import('../pages/projects/ProjectsPage.vue'),
       },
       {
         name: 'payments',
@@ -71,41 +72,41 @@ const routes: Array<RouteRecordRaw> = [
       },
     ],
   },
-  {
-    path: '/auth',
-    component: AuthLayout,
-    children: [
-      {
-        name: 'login',
-        path: 'login',
-        component: () => import('../pages/auth/Login.vue'),
-      },
-      {
-        name: 'signup',
-        path: 'signup',
-        component: () => import('../pages/auth/Signup.vue'),
-      },
-      {
-        name: 'recover-password',
-        path: 'recover-password',
-        component: () => import('../pages/auth/RecoverPassword.vue'),
-      },
-      {
-        name: 'recover-password-email',
-        path: 'recover-password-email',
-        component: () => import('../pages/auth/CheckTheEmail.vue'),
-      },
-      {
-        path: '',
-        redirect: { name: 'login' },
-      },
-    ],
-  },
-  {
-    name: '404',
-    path: '/404',
-    component: () => import('../pages/404.vue'),
-  },
+  // {
+  //   path: '/auth',
+  //   component: AuthLayout,
+  //   children: [
+  //     {
+  //       name: 'login',
+  //       path: 'login',
+  //       component: () => import('../pages/auth/Login.vue'),
+  //     },
+  //     {
+  //       name: 'signup',
+  //       path: 'signup',
+  //       component: () => import('../pages/auth/Signup.vue'),
+  //     },
+  //     {
+  //       name: 'recover-password',
+  //       path: 'recover-password',
+  //       component: () => import('../pages/auth/RecoverPassword.vue'),
+  //     },
+  //     {
+  //       name: 'recover-password-email',
+  //       path: 'recover-password-email',
+  //       component: () => import('../pages/auth/CheckTheEmail.vue'),
+  //     },
+  //     {
+  //       path: '',
+  //       redirect: { name: 'login' },
+  //     },
+  //   ],
+  // },
+  // {
+  //   name: '404',
+  //   path: '/404',
+  //   component: () => import('../pages/404.vue'),
+  // },
 ]
 
 const router = createRouter({
