@@ -18,7 +18,7 @@
                 </template>
                 <template #cell(actions)="{ row }">
                     <div v-show="showActions">
-                        <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit"
+                        <VaButton @click="editItem(row.itemKey)" preset="primary" size="small" icon="edit"
                             aria-label="Edit item" />
                         <VaButton @click="deleteItem(row.itemKey.id)" preset="primary" size="small" icon="delete"
                             color="danger" aria-label="Delete item" />
@@ -141,9 +141,10 @@ export default defineComponent({
             this.totalPages = response.data.lastPage;
         },
         openModal() {
-            this.formData = this.getInitialFormData();
+            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();
             this.isModalOpen = true;
         },
+
         closeModal() {
             this.isModalOpen = false;
             this.isEditing = false;
