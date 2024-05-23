@@ -168,7 +168,7 @@ export default defineComponent({
             this.openModal();
         },
         async deleteItem(id) {
-            console.log("id >>> ", id);  // Adicionando o log aqui para verificar o ID
+            //console.log("id >>> ", id);  
             try {
                 await this.removeItem(id);
                 await this.loadData();

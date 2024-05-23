@@ -7,7 +7,7 @@
             </div>
             <div class="modal-actions w-full">
                 <VaButton @click="closeModal" color="secondary">Cancelar</VaButton>
-                <VaButton type="submit">{{ isEditing ? 'Salvar' : 'Adicionar' }}</VaButton>
+                <VaButton @click="handleSubmit" type="submit">{{ isEditing ? 'Salvar' : 'Adicionar' }}</VaButton>
             </div>
         </VaForm>
     </VaModal>
@@ -36,23 +36,17 @@ export default defineComponent({
             required: true
         }
     },
-    emits: ['update:isOpen', 'submit'],
+    emits: ['update:isOpen', 'submit'], // Certifique-se de que 'submit' está incluído na lista de eventos emitidos
     methods: {
         handleSubmit() {
+            console.log('handleSubmit chamado');
             this.$emit('submit');
         },
+
         closeModal() {
+            // Este método deveria emitir o evento 'update:isOpen' com o valor 'false' para fechar o modal
             this.$emit('update:isOpen', false);
         }
     }
 });
 </script>
-
-<style scoped>
-.modal-actions {
-    display: flex;
-    justify-content: flex-end;
-    gap: 1rem;
-    margin-top: 1rem;
-}
-</style>

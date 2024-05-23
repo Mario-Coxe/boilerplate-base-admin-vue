@@ -46,7 +46,7 @@ const getRecords = (params: PaginationParams = {}): Promise<AxiosResponse<Pagina
 };
 
 const create = (data: LuggageType): Promise<AxiosResponse<LuggageType>> => {
-  return colorsTypeService.post<LuggageType>('', data);
+  return colorsTypeService.post<LuggageType>('/create', data);
 };
 
 const update = (id: number, data: Partial<LuggageType>): Promise<AxiosResponse<LuggageType>> => {
