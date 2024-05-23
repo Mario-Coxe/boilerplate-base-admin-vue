@@ -1,7 +1,7 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" :fetchData="fetchData"
-            :loading="loading" :showActions="showActions" />
+        <BaseTable :columns="columns" :formColumns="formColumns" :fetchData="fetchData" :createItem="createItem"
+            :updateItem="updateItem" :removeItem="removeItem" :loading="loading" :showActions="showActions" />
     </div>
 </template>
 
@@ -24,7 +24,6 @@ export default defineComponent({
                 { key: 'created_at', label: 'Created At' },
                 { key: 'actions', label: 'Actions' },
             ],
-            luggageData: [],
             formColumns: [
                 { key: 'description', label: 'Description', required: true },
                 { key: 'value', label: 'Value' },
@@ -37,10 +36,38 @@ export default defineComponent({
         async fetchData(params = {}) {
             try {
                 const response = await colorsTypeService.getRecords(params);
-                this.luggageData = response.data.data;
                 return response;
             } catch (error) {
                 console.error('Error fetching colors data:', error);
+                throw error;
+            }
+        },
+        async createItem(data) {
+            try {
+                const response = await colorsTypeService.create(data);
+                return response;
+            } catch (error) {
+                console.error('Error creating color:', error);
+                throw error;
+            }
+        },
+        async updateItem(data) {
+            try {
+                const response = await colorsTypeService.update(data.id, data);
+                return response;
+            } catch (error) {
+                console.error('Error updating color:', error);
+                throw error;
+            }
+        },
+        async removeItem(id) {
+
+            //console.log("id >>> ", id)
+            try {
+                const response = await colorsTypeService.remove(id);
+                return response;
+            } catch (error) {
+                console.error('Error deleting color:', error);
                 throw error;
             }
         },

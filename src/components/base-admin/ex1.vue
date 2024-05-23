@@ -12,7 +12,7 @@
                 <VaButton @click="openModal">Adicionar Item</VaButton>
             </div>
 
-            <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
+            <VaDataTable :items="paginatedData" :columns="columns" class="va-table" v-if="!loading">
                 <template #cell(index)="{ index }">
                     <span>{{ getRecordIndex(index) }}</span>
                 </template>
@@ -20,8 +20,8 @@
                     <div v-show="showActions">
                         <VaButton @click="editItem(row)" preset="primary" size="small" icon="edit"
                             aria-label="Edit item" />
-                        <VaButton @click="deleteItem(row.itemKey.id)" preset="primary" size="small" icon="delete"
-                            color="danger" aria-label="Delete item" />
+                        <VaButton @click="deleteItem(row.id)" preset="primary" size="small" icon="delete" color="danger"
+                            aria-label="Delete item" />
                     </div>
                 </template>
             </VaDataTable>
@@ -119,15 +119,15 @@ export default defineComponent({
         },
     },
     watch: {
-        // currentPage() {
-        //     this.loadData();
-        // },
-        // itemsPerPage() {
-        //     this.loadData();
-        // },
-        // searchQuery() {
-        //     this.loadData();
-        // },
+        currentPage() {
+            this.loadData();
+        },
+        itemsPerPage() {
+            this.loadData();
+        },
+        searchQuery() {
+            this.loadData();
+        },
     },
     methods: {
         async loadData() {
@@ -150,17 +150,13 @@ export default defineComponent({
             this.formData = this.getInitialFormData();
         },
         async handleSubmit() {
-            try {
-                if (this.isEditing) {
-                    await this.updateItem(this.formData);
-                } else {
-                    await this.createItem(this.formData);
-                }
-                await this.loadData();
-                this.closeModal();
-            } catch (error) {
-                console.error('Error saving item:', error);
+            if (this.isEditing) {
+                await this.updateItem(this.formData);
+            } else {
+                await this.createItem(this.formData);
             }
+            this.closeModal();
+            this.loadData();
         },
         editItem(item) {
             this.formData = { ...item };
@@ -168,7 +164,6 @@ export default defineComponent({
             this.openModal();
         },
         async deleteItem(id) {
-            console.log("id >>> ", id);  // Adicionando o log aqui para verificar o ID
             try {
                 await this.removeItem(id);
                 await this.loadData();

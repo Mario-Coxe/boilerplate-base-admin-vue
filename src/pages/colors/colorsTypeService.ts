@@ -1,4 +1,4 @@
-import axios from 'axios';
+import axios, { AxiosResponse } from 'axios';
 
 const colorsTypeService = axios.create({
   baseURL: 'http://127.0.0.1:3333/api/v1/colors',
@@ -34,7 +34,7 @@ interface PaginatedResponse<T> {
   data: T[];
 }
 
-const getRecords = (params: PaginationParams = {}) => {
+const getRecords = (params: PaginationParams = {}): Promise<AxiosResponse<PaginatedResponse<LuggageType>>> => {
   const queryParams = new URLSearchParams({
     search: params.search || '',
     lastPage: params.lastPage?.toString() || '0',
@@ -45,16 +45,16 @@ const getRecords = (params: PaginationParams = {}) => {
   return colorsTypeService.get<PaginatedResponse<LuggageType>>(`?${queryParams}`);
 };
 
-const create = (data: any) => {
-  return colorsTypeService.post('', data);
+const create = (data: LuggageType): Promise<AxiosResponse<LuggageType>> => {
+  return colorsTypeService.post<LuggageType>('', data);
 };
 
-const update = (id: number, data: any) => {
-  return colorsTypeService.put(`/${id}`, data);
+const update = (id: number, data: Partial<LuggageType>): Promise<AxiosResponse<LuggageType>> => {
+  return colorsTypeService.put<LuggageType>(`/${id}`, data);
 };
 
-const remove = (id: number) => {
-  return colorsTypeService.delete(`/${id}`);
+const remove = (id: number): Promise<AxiosResponse<void>> => {
+  return colorsTypeService.delete<void>(`/${id}`);
 };
 
 export default {
