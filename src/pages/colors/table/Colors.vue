@@ -61,8 +61,6 @@ export default defineComponent({
             }
         },
         async removeItem(id) {
-
-            //console.log("id >>> ", id)
             try {
                 const response = await colorsTypeService.remove(id);
                 return response;

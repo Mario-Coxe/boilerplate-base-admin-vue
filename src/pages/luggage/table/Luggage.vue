@@ -1,7 +1,7 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :data="luggageData" :formColumns="formColumns" :fetchData="fetchData"
-            :loading="loading" :showActions="showActions" />
+        <BaseTable :columns="columns" :formColumns="formColumns" :fetchData="fetchData" :createItem="createItem"
+            :updateItem="updateItem" :removeItem="removeItem" :loading="loading" :showActions="showActions" />
     </div>
 </template>
 
@@ -21,9 +21,8 @@ export default defineComponent({
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
                 { key: 'created_at', label: 'Created At' },
-                //{ key: 'actions', label: 'Actions' },
+                // { key: 'actions', label: 'Actions' },
             ],
-            luggageData: [],
             formColumns: [
                 { key: 'description', label: 'Description', required: true },
                 { key: 'slug', label: 'Slug' },
@@ -36,10 +35,36 @@ export default defineComponent({
         async fetchData(params = {}) {
             try {
                 const response = await luggageTypeService.getRecords(params);
-                this.luggageData = response.data.data;
                 return response;
             } catch (error) {
                 console.error('Error fetching luggage data:', error);
+                throw error;
+            }
+        },
+        async createItem(data) {
+            try {
+                const response = await luggageTypeService.create(data);
+                return response;
+            } catch (error) {
+                console.error('Error creating luggage item:', error);
+                throw error;
+            }
+        },
+        async updateItem(data) {
+            try {
+                const response = await luggageTypeService.update(data.id, data);
+                return response;
+            } catch (error) {
+                console.error('Error updating luggage item:', error);
+                throw error;
+            }
+        },
+        async removeItem(id) {
+            try {
+                const response = await luggageTypeService.remove(id);
+                return response;
+            } catch (error) {
+                console.error('Error deleting luggage item:', error);
                 throw error;
             }
         },

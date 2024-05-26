@@ -27,7 +27,7 @@
             </VaDataTable>
 
             <!-- Paginação -->
-            <div v-if="totalPages > 1" class="pagination">
+            <div class="pagination">
                 <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
                 <span>Page {{ currentPage }} of {{ totalPages }}</span>
                 <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
@@ -100,22 +100,10 @@ export default defineComponent({
         filterOptions() {
             return this.columns.map((column) => ({ label: column.label, value: column.key }));
         },
-        filteredData() {
-            let filtered = this.tableData;
-            if (this.searchQuery) {
-                filtered = filtered.filter((item) => {
-                    if (this.selectedColumn) {
-                        return item[this.selectedColumn]?.toString().toLowerCase().includes(this.searchQuery.toLowerCase());
-                    }
-                    return Object.values(item).some((value) => value.toString().toLowerCase().includes(this.searchQuery.toLowerCase()));
-                });
-            }
-            return filtered;
-        },
         paginatedData() {
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
-            return this.filteredData.slice(start, end);
+            return (start, end);
         },
     },
     watch: {
@@ -125,20 +113,23 @@ export default defineComponent({
         // itemsPerPage() {
         //     this.loadData();
         // },
-        // searchQuery() {
-        //     this.loadData();
-        // },
+        searchQuery() {
+            this.loadData();
+        },
     },
     methods: {
         async loadData() {
             const params = {
-                page: this.currentPage,
-                perPage: this.itemsPerPage,
+                page: this.searchQuery ? 1 : this.currentPage,
+                perPage: this.searchQuery ? this.total : this.itemsPerPage,
                 search: this.searchQuery,
             };
             const response = await this.fetchData(params);
+
             this.tableData = response.data.data;
+            this.total = response.data.total;
             this.totalPages = response.data.lastPage;
+
         },
         openModal() {
             this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();
