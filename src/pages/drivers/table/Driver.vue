@@ -22,8 +22,6 @@ export default defineComponent({
                 { key: 'phone_number', label: 'Phone' },
                 { key: 'email', label: 'Email' },
                 { key: 'suppliers.name', label: 'Suppliers'}
-
-                // { key: 'actions', label: 'Actions' },
             ],
             formColumns: [
 

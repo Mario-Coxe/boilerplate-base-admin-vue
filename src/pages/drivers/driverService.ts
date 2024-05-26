@@ -34,15 +34,9 @@ interface PaginatedResponse<T> {
   data: T[];
 }
 
-const getRecords = (params: PaginationParams = {}) => {
-  const queryParams = new URLSearchParams({
-    search: params.search || '',
-    lastPage: params.lastPage?.toString() || '0',
-    page: params.page?.toString() || '1',
-    perPage: params.perPage?.toString() || '10',
-    total: params.total?.toString() || '0'
-  }).toString();
-  return driverService.get<PaginatedResponse<LuggageType>>(`?${queryParams}`);
+
+const getRecords = (params: PaginatedResponse<LuggageType>) => {
+  return driverService.get('', { params });
 };
 
 export default {

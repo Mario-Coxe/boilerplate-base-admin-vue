@@ -27,7 +27,7 @@
             </VaDataTable>
 
             <!-- Paginação -->
-            <div v-if="totalPages > 1" class="pagination">
+            <div v-if="!searchQuery && totalPages > 1" class="pagination">
                 <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
                 <span>Page {{ currentPage }} of {{ totalPages }}</span>
                 <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
@@ -43,6 +43,7 @@
 <script>
 import { defineComponent } from 'vue';
 import ItemModal from './parts-components/ItemModal.vue';
+import apiService from '@/path/to/apiService';  // ajuste o caminho conforme necessário
 
 export default defineComponent({
     name: 'BaseTable',
@@ -56,22 +57,6 @@ export default defineComponent({
         },
         formColumns: {
             type: Array,
-            required: true,
-        },
-        fetchData: {
-            type: Function,
-            required: true,
-        },
-        createItem: {
-            type: Function,
-            required: true,
-        },
-        updateItem: {
-            type: Function,
-            required: true,
-        },
-        removeItem: {
-            type: Function,
             required: true,
         },
         loading: {
@@ -94,6 +79,7 @@ export default defineComponent({
             itemsPerPage: 10,
             totalPages: 1,
             tableData: [],
+            allData: [],
         };
     },
     computed: {
@@ -101,7 +87,7 @@ export default defineComponent({
             return this.columns.map((column) => ({ label: column.label, value: column.key }));
         },
         filteredData() {
-            let filtered = this.tableData;
+            let filtered = this.allData;
             if (this.searchQuery) {
                 filtered = filtered.filter((item) => {
                     if (this.selectedColumn) {
@@ -113,19 +99,17 @@ export default defineComponent({
             return filtered;
         },
         paginatedData() {
+            if (this.searchQuery) {
+                return this.filteredData;
+            }
             const start = (this.currentPage - 1) * this.itemsPerPage;
             const end = start + this.itemsPerPage;
             return this.filteredData.slice(start, end);
         },
     },
     watch: {
-        currentPage() {
-            this.loadData();
-        },
-        itemsPerPage() {
-            this.loadData();
-        },
         searchQuery() {
+            this.currentPage = 1;
             this.loadData();
         },
     },
@@ -136,12 +120,12 @@ export default defineComponent({
                 perPage: this.itemsPerPage,
                 search: this.searchQuery,
             };
-            const response = await this.fetchData(params);
-            this.tableData = response.data.data;
-            this.totalPages = response.data.lastPage;
+            const response = await apiService.getRecords(params);
+            this.allData = response.data.data;
+            this.totalPages = this.searchQuery ? 1 : response.data.lastPage;
         },
         openModal() {
-            this.formData = this.getInitialFormData();
+            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();
             this.isModalOpen = true;
         },
         closeModal() {
@@ -150,13 +134,17 @@ export default defineComponent({
             this.formData = this.getInitialFormData();
         },
         async handleSubmit() {
-            if (this.isEditing) {
-                await this.updateItem(this.formData);
-            } else {
-                await this.createItem(this.formData);
+            try {
+                if (this.isEditing) {
+                    await apiService.updateItem(this.formData);
+                } else {
+                    await apiService.createItem(this.formData);
+                }
+                await this.loadData();
+                this.closeModal();
+            } catch (error) {
+                console.error('Error saving item:', error);
             }
-            this.closeModal();
-            this.loadData();
         },
         editItem(item) {
             this.formData = { ...item };
@@ -165,7 +153,7 @@ export default defineComponent({
         },
         async deleteItem(id) {
             try {
-                await this.removeItem(id);
+                await apiService.removeItem(id);
                 await this.loadData();
             } catch (error) {
                 console.error('Error deleting item:', error);
