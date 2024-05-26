@@ -32,6 +32,13 @@ export default {
         icon: 'folder_shared',
       },
     },
+     {
+      name: 'driver',
+      displayName: 'Drivers',
+      meta: {
+        icon: 'folder_shared',
+      },
+    },
     // {
     //   name: 'payments',
     //   displayName: 'menu.payments',

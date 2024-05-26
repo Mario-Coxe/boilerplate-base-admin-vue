@@ -12,7 +12,7 @@
                 </VaButton>
                 <!-- <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
                     class="w-48" /> -->
-                <VaButton @click="openModal">Adicionar Item</VaButton>
+                <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
             </div>
 
             <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
