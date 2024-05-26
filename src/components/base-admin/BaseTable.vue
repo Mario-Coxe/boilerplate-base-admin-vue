@@ -1,14 +1,17 @@
 <template>
     <VaCard>
         <VaCardContent>
-            <div class="flex flex-col md:flex-row gap-2 mb-2 justify-between">
+            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
                 <VaInput v-model="searchQuery" placeholder="Search">
                     <template #prependInner>
                         <VaIcon name="search" color="secondary" size="small" />
                     </template>
                 </VaInput>
-                <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
-                    class="w-48" />
+                <VaButton icon="update" color="success" @click="loadData">
+                    Refresh
+                </VaButton>
+                <!-- <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
+                    class="w-48" /> -->
                 <VaButton @click="openModal">Adicionar Item</VaButton>
             </div>
 
@@ -181,7 +184,7 @@ export default defineComponent({
             }
         },
         formatDate(date) {
-            if (!date) return 'N/A';
+            if (!date) return '';
             return new Date(date).toLocaleString();
         },
         getInitialFormData() {
