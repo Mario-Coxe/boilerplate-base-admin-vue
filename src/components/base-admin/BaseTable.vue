@@ -3,6 +3,10 @@
         {{ message }}
     </VaAlert>
 
+    <VaAlert color="danger" border="top" class="mb-6" v-model="isFailedAlert">
+        {{ message }}
+    </VaAlert>
+
     <pdfexport ref="gridPdfExport">
         <VaCard>
             <VaCardContent>
@@ -90,6 +94,7 @@ export default defineComponent({
             itemsPerPage: 10,
             totalPages: 1,
             isSucessAlert: false,
+            isFailedAlert: false,
             message: '',
             tableData: [],
         };
@@ -129,35 +134,53 @@ export default defineComponent({
             this.isEditing = false;
             this.formData = this.getInitialFormData();
         },
+
         async editOrCreate() {
             try {
                 if (this.isEditing) {
-                    const response = await this.service.update(this.formData.id, this.formData);
-                    this.message = response.data.message;
-                    this.isSucessAlert = true;
-                    this.closeModal();
-                    setTimeout(() => {
-                        this.isSucessAlert = false;
-                    }, 2000);
-                    this.loadData();
-
-                    return response;
+                    try {
+                        const response = await this.service.update(this.formData.id, this.formData);
+                        this.message = response.data.message;
+                        this.isSucessAlert = true;
+                        this.closeModal();
+                        setTimeout(() => {
+                            this.isSucessAlert = false;
+                        }, 2000);
+                        this.loadData();
+                        return response;
+                    } catch (error) {
+                        this.message = error.response.data.message;
+                        this.isFailedAlert = true;
+                        setTimeout(() => {
+                            this.isFailedAlert = false;
+                        }, 2500);
+                        this.closeModal();
+                    }
                 } else {
-                    const response = await this.service.create(this.formData);
-                    this.message = response.data.message;
-                    this.isSucessAlert = true;
-                    this.closeModal();
-                    setTimeout(() => {
-                        this.isSucessAlert = false;
-                    }, 2000);
-                    this.loadData();
+                    try {
+                        const response = await this.service.create(this.formData);
+                        this.message = response.data.message;
+                        this.isSucessAlert = true;
+                        this.closeModal();
+                        setTimeout(() => {
+                            this.isSucessAlert = false;
+                        }, 2000);
+                        this.loadData();
+                    } catch (error) {
+                        this.message = error.response.data.message;
+                        this.isFailedAlert = true;
+                        setTimeout(() => {
+                            this.isFailedAlert = false;
+                        }, 2500);
+                        this.closeModal();
+                    }
                 }
-                this.loadData();
-                this.closeModal();
             } catch (error) {
-                console.error('Error saving item:', error);
+                this.message = error;
+                this.isFailedAlert = true;
             }
         },
+
 
         editItem(item) {
             this.formData = { ...item };
@@ -174,7 +197,8 @@ export default defineComponent({
                 }, 2000);
                 this.loadData();
             } catch (error) {
-                console.error('Error deleting item:', error);
+                this.message = error
+                this.isFailedAlert = true;
             }
         },
         prevPage() {
