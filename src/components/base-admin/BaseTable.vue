@@ -39,8 +39,22 @@
                     </template>
                 </VaDataTable>
 
+
+                <div class="p-10" v-if="loading">
+                    <VaInnerLoading loading color="warning">
+                        <VaCard>
+                            <VaCardTitle></VaCardTitle>
+                            <VaCardContent>
+
+                            </VaCardContent>
+                        </VaCard>
+                    </VaInnerLoading>
+
+                </div>
+
+
                 <div class="pagination">
-                    <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+                    <button @click="prevPage" :disabled="currentPage === 1" >Previous</button>
                     <span>Page {{ currentPage }} of {{ totalPages }}</span>
                     <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
                 </div>

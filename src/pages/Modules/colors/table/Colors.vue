@@ -28,7 +28,7 @@ export default defineComponent({
                 { key: 'description', label: 'Description', required: true },
                 { key: 'value', label: 'Value' },
             ],
-            loading: false,
+            loading: true,
             showActions: true,
             colorsTypeService
         };
