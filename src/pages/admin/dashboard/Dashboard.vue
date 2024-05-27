@@ -1,6 +1,5 @@
 <script lang="ts" setup>
 import RevenueUpdates from './cards/RevenueReport.vue'
-import ProjectTable from './cards/ProjectTable.vue'
 import RevenueByLocationMap from './cards/RevenueByLocationMap.vue'
 import DataSection from './DataSection.vue'
 import YearlyBreakup from './cards/YearlyBreakup.vue'

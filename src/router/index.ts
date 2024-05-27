@@ -21,38 +21,22 @@ const routes: Array<RouteRecordRaw> = [
         path: 'dashboard',
         component: () => import('../pages/admin/dashboard/Dashboard.vue'),
       },
-      // {
-      //   name: 'settings',
-      //   path: 'settings',
-      //   component: () => import('../pages/settings/Settings.vue'),
-      // },
-      // {
-      //   name: 'preferences',
-      //   path: 'preferences',
-      //   component: () => import('../pages/preferences/Preferences.vue'),
-      // },
+
       {
         name: 'users',
         path: 'users',
-        component: () => import('../pages/luggage/table/Luggage.vue'),
-        //component: () => import('../pages/users/UsersPage.vue'),
+        component: () => import('../pages/Modules/luggage/table/Luggage.vue'),
       },
       {
         name: 'projects',
         path: 'projects',
-          component: () => import('../pages/colors/table/Colors.vue')
-        //component: () => import('../pages/projects/ProjectsPage.vue'),
+        component: () => import('../pages/Modules/colors/table/Colors.vue'),
       },
       {
         name: 'driver',
-          path: 'driver',
-            component: () => import('../pages/drivers/table/Driver.vue'),
+        path: 'driver',
+        component: () => import('../pages/Modules/drivers/table/Driver.vue'),
       },
-      // {
-      //   name: 'faq',
-      //   path: '/faq',
-      //   component: () => import('../pages/faq/FaqPage.vue'),
-      // },
     ],
   },
   // {
@@ -98,7 +82,6 @@ const router = createRouter({
     if (savedPosition) {
       return savedPosition
     }
-    // For some reason using documentation example doesn't scroll on page navigation.
     if (to.hash) {
       return { el: to.hash, behavior: 'smooth' }
     } else {
