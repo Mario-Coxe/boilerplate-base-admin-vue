@@ -1,15 +1,6 @@
 <template>
-  <VaButton
-    preset="secondary"
-    color="textPrimary"
-    href="https://github.com/epicmaxco/vuestic-admin"
-    target="_blank"
-    aria-label="Visit github"
-  >
-    <VaIcon :component="VaIconGitHub" />
-  </VaButton>
+  <h1>LOGO</h1>
 </template>
 
 <script lang="ts" setup>
-import VaIconGitHub from '../../icons/VaIconGitHub.vue'
 </script>

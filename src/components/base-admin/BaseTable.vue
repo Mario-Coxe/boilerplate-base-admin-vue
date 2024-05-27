@@ -1,51 +1,56 @@
 <template>
-    <VaCard>
-        <VaCardContent>
-            <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                <VaInput v-model="searchQuery" placeholder="Search">
-                    <template #prependInner>
-                        <VaIcon name="search" color="secondary" size="small" />
-                    </template>
-                </VaInput>
-                <VaButton icon="update" color="success" @click="loadData">
-                    Refresh
-                </VaButton>
-                <!-- <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
-                    class="w-48" /> -->
-                <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
-            </div>
-
-            <VaDataTable :items="tableData" :columns="columns" class="va-table" v-if="!loading">
-                <template #cell(index)="{ index }">
-                    <span>{{ getRecordIndex(index) }}</span>
-                </template>
-                <template #cell(actions)="{ row }">
-                    <div v-show="showActions">
-                        <VaButton @click="editItem(row.itemKey)" preset="primary" size="small" icon="edit"
-                            aria-label="Edit item" />
-                        <VaButton @click="deleteItem(row.itemKey.id)" preset="primary" size="small" icon="delete"
-                            color="danger" aria-label="Delete item" />
+    <pdfexport ref="gridPdfExport">
+        <VaCard>
+            <VaCardContent>
+                <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
+                    <VaInput v-model="searchQuery" placeholder="Search">
+                        <template #prependInner>
+                            <VaIcon name="search" color="secondary" size="small" />
+                        </template>
+                    </VaInput>
+                    <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
+                    <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
+                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
+                        <VaButton icon="download" preset="primary"> PDF </VaButton>
+                        <VaButton icon="download" preset="primary"> Exel </VaButton>
                     </div>
-                </template>
-            </VaDataTable>
 
-            <!-- Paginação -->
-            <div class="pagination">
-                <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
-                <span>Page {{ currentPage }} of {{ totalPages }}</span>
-                <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
-            </div>
+                    <!-- <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
+                        class="w-48" /> -->
+                </div>
 
-        </VaCardContent>
-    </VaCard>
+                <VaDataTable :items="tableData" :columns="columns" class="va-table-responsive" v-if="!loading">
+                    <template #cell(index)="{ index }">
+                        <span>{{ getRecordIndex(index) }}</span>
+                    </template>
+                    <template #cell(actions)="{ row }">
+                        <div v-show="showActions">
+                            <VaButton @click="editItem(row.itemKey)" preset="primary" size="small" icon="edit"
+                                aria-label="Edit item" />
+                            <VaButton @click="deleteItem(row.itemKey.id)" preset="primary" size="small" icon="delete"
+                                color="danger" aria-label="Delete item" />
+                        </div>
+                    </template>
+                </VaDataTable>
 
-    <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
-        @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
+                <!-- Paginação -->
+                <div class="pagination">
+                    <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
+                    <span>Page {{ currentPage }} of {{ totalPages }}</span>
+                    <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
+                </div>
+            </VaCardContent>
+        </VaCard>
+
+        <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
+            @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
+    </pdfexport>
 </template>
 
 <script>
-import { defineComponent } from 'vue';
-import ItemModal from './parts-components/ItemModal.vue';
+import { defineComponent } from 'vue'
+import ItemModal from './parts-components/ItemModal.vue'
+import { GridPdfExport } from '@progress/kendo-vue-pdf'
 
 export default defineComponent({
     name: 'BaseTable',
@@ -97,16 +102,19 @@ export default defineComponent({
             itemsPerPage: 10,
             totalPages: 1,
             tableData: [],
-        };
+        }
+    },
+    components: {
+        pdfexport: GridPdfExport,
     },
     computed: {
         filterOptions() {
-            return this.columns.map((column) => ({ label: column.label, value: column.key }));
+            return this.columns.map((column) => ({ label: column.label, value: column.key }))
         },
         paginatedData() {
-            const start = (this.currentPage - 1) * this.itemsPerPage;
-            const end = start + this.itemsPerPage;
-            return (start, end);
+            const start = (this.currentPage - 1) * this.itemsPerPage
+            const end = start + this.itemsPerPage
+            return start, end
         },
     },
     watch: {
@@ -117,7 +125,7 @@ export default defineComponent({
         //     this.loadData();
         // },
         searchQuery() {
-            this.loadData();
+            this.loadData()
         },
     },
     methods: {
@@ -126,87 +134,93 @@ export default defineComponent({
                 page: this.searchQuery ? 1 : this.currentPage,
                 perPage: this.searchQuery ? this.total : this.itemsPerPage,
                 search: this.searchQuery,
-            };
-            const response = await this.fetchData(params);
+            }
+            const response = await this.fetchData(params)
 
-            this.tableData = response.data.data;
-            this.total = response.data.total;
-            this.totalPages = response.data.lastPage;
-
+            this.tableData = response.data.data
+            this.total = response.data.total
+            this.totalPages = response.data.lastPage
         },
         openModal() {
-            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();
-            this.isModalOpen = true;
+            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData()
+            this.isModalOpen = true
         },
 
         closeModal() {
-            this.isModalOpen = false;
-            this.isEditing = false;
-            this.formData = this.getInitialFormData();
+            this.isModalOpen = false
+            this.isEditing = false
+            this.formData = this.getInitialFormData()
         },
         async handleSubmit() {
             try {
                 if (this.isEditing) {
-                    await this.updateItem(this.formData);
+                    await this.updateItem(this.formData)
                 } else {
-                    await this.createItem(this.formData);
+                    await this.createItem(this.formData)
                 }
-                await this.loadData();
-                this.closeModal();
+                await this.loadData()
+                this.closeModal()
             } catch (error) {
-                console.error('Error saving item:', error);
+                console.error('Error saving item:', error)
             }
         },
         editItem(item) {
-            this.formData = { ...item };
-            this.isEditing = true;
-            this.openModal();
+            this.formData = { ...item }
+            this.isEditing = true
+            this.openModal()
         },
         async deleteItem(id) {
-            //console.log("id >>> ", id);  
+            //console.log("id >>> ", id);
             try {
-                await this.removeItem(id);
-                await this.loadData();
+                await this.removeItem(id)
+                await this.loadData()
             } catch (error) {
-                console.error('Error deleting item:', error);
+                console.error('Error deleting item:', error)
             }
         },
         prevPage() {
             if (this.currentPage > 1) {
-                this.currentPage--;
-                this.loadData();
+                this.currentPage--
+                this.loadData()
             }
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {
-                this.currentPage++;
-                this.loadData();
+                this.currentPage++
+                this.loadData()
             }
         },
         formatDate(date) {
-            if (!date) return '';
-            return new Date(date).toLocaleString();
+            if (!date) return ''
+            return new Date(date).toLocaleString()
         },
         getInitialFormData() {
             return this.formColumns.reduce((acc, column) => {
-                acc[column.key] = '';
-                return acc;
-            }, {});
+                acc[column.key] = ''
+                return acc
+            }, {})
         },
         getRecordIndex(index) {
-            return (this.currentPage - 1) * this.itemsPerPage + index + 1;
+            return (this.currentPage - 1) * this.itemsPerPage + index + 1
+        },
+        async exportPDF() {
+            try {
+                await this.$nextTick(() => {
+                    this.$refs.gridPdfExport.save(process(this.tableData.data))
+                })
+            } catch (error) {
+                console.log('erro: ', error)
+            }
         },
     },
     created() {
-        this.loadData();
+        this.loadData()
     },
-});
+})
 </script>
 
 <style scoped>
-.va-table {
-    width: 100%;
-}
+
 
 .pagination {
     margin-top: 20px;

@@ -3,16 +3,10 @@
     <template #left>
       <div class="left">
         <Transition v-if="isMobile" name="icon-fade" mode="out-in">
-          <VaIcon
-            color="primary"
-            :name="isSidebarMinimized ? 'menu' : 'close'"
-            size="24px"
-            style="margin-top: 3px"
-            @click="isSidebarMinimized = !isSidebarMinimized"
-          />
+
         </Transition>
         <RouterLink to="/" aria-label="Visit home page">
-          <VuesticLogo />
+          <h1>LOGO</h1>
         </RouterLink>
       </div>
     </template>
@@ -26,7 +20,7 @@
 import { storeToRefs } from 'pinia'
 import { useGlobalStore } from '../../stores/global-store'
 import AppNavbarActions from './components/AppNavbarActions.vue'
-import VuesticLogo from '../VuesticLogo.vue'
+
 
 defineProps({
   isMobile: { type: Boolean, default: false },
@@ -58,11 +52,11 @@ const { isSidebarMinimized } = storeToRefs(GlobalStore)
   align-items: center;
   margin-left: 1rem;
 
-  & > * {
+  &>* {
     margin-right: 1rem;
   }
 
-  & > *:last-child {
+  &>*:last-child {
     margin-right: 0;
   }
 }
