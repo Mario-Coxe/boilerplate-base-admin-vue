@@ -15,7 +15,6 @@ export default defineComponent({
     name: 'ColorsTable',
     components: {
         BaseTable,
-        colorsTypeService
     },
     data() {
         return {
@@ -32,6 +31,8 @@ export default defineComponent({
             ],
             loading: false,
             showActions: true,
+            colorsTypeService
+            //service: colorsTypeService
         };
     },
     methods: {

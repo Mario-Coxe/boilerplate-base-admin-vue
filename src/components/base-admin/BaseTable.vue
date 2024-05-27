@@ -15,10 +15,10 @@
                     </VaInput>
                     <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
                     <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
-                    <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
+                    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
                         <VaButton icon="download" preset="primary"> PDF </VaButton>
                         <VaButton icon="download" preset="primary"> Excel </VaButton>
-                    </div>
+                    </div> -->
                 </div>
 
                 <VaDataTable :items="tableData" :columns="columns" class="va-table-responsive" v-if="!loading">
@@ -35,7 +35,6 @@
                     </template>
                 </VaDataTable>
 
-                <!-- Paginação -->
                 <div class="pagination">
                     <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
                     <span>Page {{ currentPage }} of {{ totalPages }}</span>
@@ -92,7 +91,7 @@ export default defineComponent({
             default: true,
         },
         service: {
-            type: Function,
+            type: Object,
             required: true
         }
     },
@@ -108,7 +107,6 @@ export default defineComponent({
             totalPages: 1,
             isSucessAlert: false,
             message: '',
-            service: Function,
             tableData: [],
         };
     },
@@ -154,15 +152,11 @@ export default defineComponent({
             this.formData = this.getInitialFormData();
         },
         async handleSubmit() {
-            //service
-            /*
-      
-            */
             try {
                 if (this.isEditing) {
-                    const response = await service.update(this.formData.id, this.formData)
+                    const response = await this.service.update(this.formData.id, this.formData);
+                    this.message = response.data.message;
                     this.isSucessAlert = true;
-                    this.message = response.message;
                     setTimeout(() => {
                         this.isSucessAlert = false;
                     }, 2000);
@@ -176,13 +170,13 @@ export default defineComponent({
                 console.error('Error saving item:', error);
             }
         },
+
         editItem(item) {
             this.formData = { ...item };
             this.isEditing = true;
             this.openModal();
         },
         async deleteItem(id) {
-            //console.log("id >>> ", id);  
             try {
                 await this.removeItem(id);
                 await this.loadData();
@@ -218,7 +212,6 @@ export default defineComponent({
     },
     created() {
         this.loadData();
-        console.log("Service >>> ", this.service)
     },
 });
 </script>

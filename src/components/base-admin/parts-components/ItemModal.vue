@@ -39,7 +39,6 @@ export default defineComponent({
     emits: ['update:isOpen', 'submit'],
     methods: {
         handleSubmit() {
-            console.log('handleSubmit chamado');
             this.$emit('submit');
         },
 
