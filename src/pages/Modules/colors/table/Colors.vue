@@ -32,6 +32,6 @@ export default defineComponent({
             showActions: true,
             colorsTypeService
         };
-    },
+    }
 });
 </script>

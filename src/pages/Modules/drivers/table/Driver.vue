@@ -30,6 +30,6 @@ export default defineComponent({
             loading: false,
             showActions: false,
         };
-    },
+    }
 });
 </script>
