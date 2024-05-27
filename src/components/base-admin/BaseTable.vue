@@ -66,22 +66,6 @@ export default defineComponent({
             type: Array,
             required: true,
         },
-        fetchData: {
-            type: Function,
-            required: true,
-        },
-        createItem: {
-            type: Function,
-            required: true,
-        },
-        updateItem: {
-            type: Function,
-            required: true,
-        },
-        removeItem: {
-            type: Function,
-            required: true,
-        },
         loading: {
             type: Boolean,
             default: false,
@@ -118,12 +102,6 @@ export default defineComponent({
         },
     },
     watch: {
-        // currentPage() {
-        //     this.loadData();
-        // },
-        // itemsPerPage() {
-        //     this.loadData();
-        // },
         searchQuery() {
             this.loadData();
         },
@@ -135,7 +113,7 @@ export default defineComponent({
                 perPage: this.searchQuery ? this.total : this.itemsPerPage,
                 search: this.searchQuery,
             }
-            const response = await this.fetchData(params)
+            const response = await this.service.getRecords(params)
 
             this.tableData = response.data.data
             this.total = response.data.total
@@ -188,8 +166,13 @@ export default defineComponent({
         },
         async deleteItem(id) {
             try {
-                await this.removeItem(id);
-                await this.loadData();
+                const response = await this.service.delete(id);
+                this.message = response.data.message;
+                this.isSucessAlert = true;
+                setTimeout(() => {
+                    this.isSucessAlert = false;
+                }, 2000);
+                this.loadData();
             } catch (error) {
                 console.error('Error deleting item:', error);
             }

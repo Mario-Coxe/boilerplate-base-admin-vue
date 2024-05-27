@@ -17,7 +17,6 @@ interface Luggage {
   created_at: string;
   updated_at: string;
 }
-
 interface PaginatedResponse {
   total: number;
   perPage: number;

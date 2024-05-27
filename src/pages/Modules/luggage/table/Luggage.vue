@@ -1,7 +1,6 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :formColumns="formColumns" :fetchData="fetchData" :createItem="createItem"
-            :updateItem="updateItem" :removeItem="removeItem" :loading="loading" :showActions="showActions" />
+        <BaseTable :columns="columns" :formColumns="formColumns" :loading="loading" :showActions="showActions" :service="luggageTypeService" />
     </div>
 </template>
 
@@ -26,47 +25,11 @@ export default defineComponent({
                 { key: 'description', label: 'Description', required: true },
                 { key: 'slug', label: 'Slug' },
             ],
+            luggageTypeService,
             loading: false,
             showActions: false,
         };
     },
-    methods: {
-        async fetchData(params = {}) {
-            try {
-                const response = await luggageTypeService.getRecords(params);
-                return response;
-            } catch (error) {
-                console.error('Error fetching luggage data:', error);
-                throw error;
-            }
-        },
-        async createItem(data) {
-            try {
-                const response = await luggageTypeService.create(data);
-                return response;
-            } catch (error) {
-                console.error('Error creating luggage item:', error);
-                throw error;
-            }
-        },
-        async updateItem(data) {
-            try {
-                const response = await luggageTypeService.update(data.id, data);
-                return response;
-            } catch (error) {
-                console.error('Error updating luggage item:', error);
-                throw error;
-            }
-        },
-        async removeItem(id) {
-            try {
-                const response = await luggageTypeService.remove(id);
-                return response;
-            } catch (error) {
-                console.error('Error deleting luggage item:', error);
-                throw error;
-            }
-        },
-    },
+
 });
 </script>
