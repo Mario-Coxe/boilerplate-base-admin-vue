@@ -32,7 +32,6 @@ export default defineComponent({
             loading: false,
             showActions: true,
             colorsTypeService
-            //service: colorsTypeService
         };
     },
     methods: {
@@ -45,7 +44,7 @@ export default defineComponent({
                 throw error;
             }
         },
-        /*
+        
          async createItem(data) {
              try {
                  const response = await colorsTypeService.create(data);
@@ -55,7 +54,7 @@ export default defineComponent({
                  throw error;
              }
          },
-         */
+         
         async updateItem(data) {
             try {
                 const response = await colorsTypeService.update(data.id, data);

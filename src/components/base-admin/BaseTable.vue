@@ -45,7 +45,7 @@
     </pdfexport>
 
     <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
-        @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
+        @update:isOpen="isModalOpen = $event" @submit="editOrCreate" />
 </template>
 
 <script>
@@ -151,7 +151,7 @@ export default defineComponent({
             this.isEditing = false;
             this.formData = this.getInitialFormData();
         },
-        async handleSubmit() {
+        async editOrCreate() {
             try {
                 if (this.isEditing) {
                     const response = await this.service.update(this.formData.id, this.formData);
@@ -161,11 +161,20 @@ export default defineComponent({
                     setTimeout(() => {
                         this.isSucessAlert = false;
                     }, 2000);
+                    this.loadData();
+
                     return response;
                 } else {
-                    await this.createItem(this.formData);
+                    const response = await this.service.create(this.formData);
+                    this.message = response.data.message;
+                    this.isSucessAlert = true;
+                    this.closeModal();
+                    setTimeout(() => {
+                        this.isSucessAlert = false;
+                    }, 2000);
+                    this.loadData();
                 }
-                await this.loadData();
+                this.loadData();
                 this.closeModal();
             } catch (error) {
                 console.error('Error saving item:', error);

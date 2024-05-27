@@ -1,8 +1,7 @@
-// services/colorService.js
 import axios from 'axios';
 import baseUrl from '../../proprieties';
 const colorService = {
-  baseURL: `${baseUrl}colors/`, // Substitua pelo seu endpoint real
+  baseURL: `${baseUrl}colors/`, 
   getRecords(params: any) {
     return axios.get(`${this.baseURL}`, { params });
   },
