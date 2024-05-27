@@ -157,6 +157,7 @@ export default defineComponent({
                     const response = await this.service.update(this.formData.id, this.formData);
                     this.message = response.data.message;
                     this.isSucessAlert = true;
+                    this.closeModal();
                     setTimeout(() => {
                         this.isSucessAlert = false;
                     }, 2000);
