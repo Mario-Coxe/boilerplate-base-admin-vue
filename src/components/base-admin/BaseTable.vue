@@ -1,4 +1,8 @@
 <template>
+    <VaAlert v-model="isSucessAlert" color="success" closeable class="mb-6">
+        {{ message }}
+    </VaAlert>
+
     <pdfexport ref="gridPdfExport">
         <VaCard>
             <VaCardContent>
@@ -7,16 +11,14 @@
                         <template #prependInner>
                             <VaIcon name="search" color="secondary" size="small" />
                         </template>
+
                     </VaInput>
                     <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
                     <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
                     <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
                         <VaButton icon="download" preset="primary"> PDF </VaButton>
-                        <VaButton icon="download" preset="primary"> Exel </VaButton>
+                        <VaButton icon="download" preset="primary"> Excel </VaButton>
                     </div>
-
-                    <!-- <VaSelect v-model="selectedColumn" :options="filterOptions" placeholder="Select Filter Column"
-                        class="w-48" /> -->
                 </div>
 
                 <VaDataTable :items="tableData" :columns="columns" class="va-table-responsive" v-if="!loading">
@@ -41,16 +43,15 @@
                 </div>
             </VaCardContent>
         </VaCard>
-
-        <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
-            @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
     </pdfexport>
+
+    <ItemModal :isOpen="isModalOpen" :isEditing="isEditing" :formData="formData" :formColumns="formColumns"
+        @update:isOpen="isModalOpen = $event" @submit="handleSubmit" />
 </template>
 
 <script>
-import { defineComponent } from 'vue'
-import ItemModal from './parts-components/ItemModal.vue'
-import { GridPdfExport } from '@progress/kendo-vue-pdf'
+import { defineComponent } from 'vue';
+import ItemModal from './parts-components/ItemModal.vue';
 
 export default defineComponent({
     name: 'BaseTable',
@@ -90,6 +91,10 @@ export default defineComponent({
             type: Boolean,
             default: true,
         },
+        service: {
+            type: Function,
+            required: true
+        }
     },
     data() {
         return {
@@ -101,20 +106,17 @@ export default defineComponent({
             currentPage: 1,
             itemsPerPage: 10,
             totalPages: 1,
+            isSucessAlert: false,
+            message: '',
+            service: Function,
             tableData: [],
-        }
-    },
-    components: {
-        pdfexport: GridPdfExport,
+        };
     },
     computed: {
-        filterOptions() {
-            return this.columns.map((column) => ({ label: column.label, value: column.key }))
-        },
         paginatedData() {
-            const start = (this.currentPage - 1) * this.itemsPerPage
-            const end = start + this.itemsPerPage
-            return start, end
+            const start = (this.currentPage - 1) * this.itemsPerPage;
+            const end = start + this.itemsPerPage;
+            return (start, end);
         },
     },
     watch: {
@@ -125,7 +127,7 @@ export default defineComponent({
         //     this.loadData();
         // },
         searchQuery() {
-            this.loadData()
+            this.loadData();
         },
     },
     methods: {
@@ -142,86 +144,86 @@ export default defineComponent({
             this.totalPages = response.data.lastPage
         },
         openModal() {
-            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData()
-            this.isModalOpen = true
+            this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();
+            this.isModalOpen = true;
         },
 
         closeModal() {
-            this.isModalOpen = false
-            this.isEditing = false
-            this.formData = this.getInitialFormData()
+            this.isModalOpen = false;
+            this.isEditing = false;
+            this.formData = this.getInitialFormData();
         },
         async handleSubmit() {
+            //service
+            /*
+      
+            */
             try {
                 if (this.isEditing) {
-                    await this.updateItem(this.formData)
+                    const response = await service.update(this.formData.id, this.formData)
+                    this.isSucessAlert = true;
+                    this.message = response.message;
+                    setTimeout(() => {
+                        this.isSucessAlert = false;
+                    }, 2000);
+                    return response;
                 } else {
-                    await this.createItem(this.formData)
+                    await this.createItem(this.formData);
                 }
-                await this.loadData()
-                this.closeModal()
+                await this.loadData();
+                this.closeModal();
             } catch (error) {
-                console.error('Error saving item:', error)
+                console.error('Error saving item:', error);
             }
         },
         editItem(item) {
-            this.formData = { ...item }
-            this.isEditing = true
-            this.openModal()
+            this.formData = { ...item };
+            this.isEditing = true;
+            this.openModal();
         },
         async deleteItem(id) {
-            //console.log("id >>> ", id);
+            //console.log("id >>> ", id);  
             try {
-                await this.removeItem(id)
-                await this.loadData()
+                await this.removeItem(id);
+                await this.loadData();
             } catch (error) {
-                console.error('Error deleting item:', error)
+                console.error('Error deleting item:', error);
             }
         },
         prevPage() {
             if (this.currentPage > 1) {
-                this.currentPage--
-                this.loadData()
+                this.currentPage--;
+                this.loadData();
             }
         },
         nextPage() {
             if (this.currentPage < this.totalPages) {
-                this.currentPage++
-                this.loadData()
+                this.currentPage++;
+                this.loadData();
             }
         },
         formatDate(date) {
-            if (!date) return ''
-            return new Date(date).toLocaleString()
+            if (!date) return 'N/A';
+            return new Date(date).toLocaleString();
         },
         getInitialFormData() {
             return this.formColumns.reduce((acc, column) => {
-                acc[column.key] = ''
-                return acc
-            }, {})
+                acc[column.key] = '';
+                return acc;
+            }, {});
         },
         getRecordIndex(index) {
-            return (this.currentPage - 1) * this.itemsPerPage + index + 1
-        },
-        async exportPDF() {
-            try {
-                await this.$nextTick(() => {
-                    this.$refs.gridPdfExport.save(process(this.tableData.data))
-                })
-            } catch (error) {
-                console.log('erro: ', error)
-            }
+            return (this.currentPage - 1) * this.itemsPerPage + index + 1;
         },
     },
     created() {
-        this.loadData()
+        this.loadData();
+        console.log("Service >>> ", this.service)
     },
-})
+});
 </script>
 
 <style scoped>
-
-
 .pagination {
     margin-top: 20px;
     display: flex;

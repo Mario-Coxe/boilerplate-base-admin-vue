@@ -21,7 +21,6 @@ export default defineComponent({
                 { key: 'slug', label: 'Slug' },
                 { key: 'description', label: 'Description' },
                 { key: 'created_at', label: 'Created At' },
-                // { key: 'actions', label: 'Actions' },
             ],
             formColumns: [
                 { key: 'description', label: 'Description', required: true },

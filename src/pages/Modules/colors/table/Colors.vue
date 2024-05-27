@@ -1,7 +1,8 @@
 <template>
     <div>
         <BaseTable :columns="columns" :formColumns="formColumns" :fetchData="fetchData" :createItem="createItem"
-            :updateItem="updateItem" :removeItem="removeItem" :loading="loading" :showActions="showActions" />
+            :updateItem="updateItem" :removeItem="removeItem" :loading="loading" :showActions="showActions"
+            :service="colorsTypeService" />
     </div>
 </template>
 
@@ -14,6 +15,7 @@ export default defineComponent({
     name: 'ColorsTable',
     components: {
         BaseTable,
+        colorsTypeService
     },
     data() {
         return {
@@ -42,18 +44,21 @@ export default defineComponent({
                 throw error;
             }
         },
-        async createItem(data) {
-            try {
-                const response = await colorsTypeService.create(data);
-                return response;
-            } catch (error) {
-                console.error('Error creating color:', error);
-                throw error;
-            }
-        },
+        /*
+         async createItem(data) {
+             try {
+                 const response = await colorsTypeService.create(data);
+                 return response;
+             } catch (error) {
+                 console.error('Error creating color:', error);
+                 throw error;
+             }
+         },
+         */
         async updateItem(data) {
             try {
                 const response = await colorsTypeService.update(data.id, data);
+                this.message = response.message
                 return response;
             } catch (error) {
                 console.error('Error updating color:', error);

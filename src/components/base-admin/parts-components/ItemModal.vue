@@ -36,7 +36,7 @@ export default defineComponent({
             required: true
         }
     },
-    emits: ['update:isOpen', 'submit'], // Certifique-se de que 'submit' está incluído na lista de eventos emitidos
+    emits: ['update:isOpen', 'submit'],
     methods: {
         handleSubmit() {
             console.log('handleSubmit chamado');
@@ -44,7 +44,6 @@ export default defineComponent({
         },
 
         closeModal() {
-            // Este método deveria emitir o evento 'update:isOpen' com o valor 'false' para fechar o modal
             this.$emit('update:isOpen', false);
         }
     }
