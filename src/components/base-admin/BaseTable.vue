@@ -23,6 +23,11 @@
                         <VaButton icon="download" preset="primary"> PDF </VaButton>
                         <VaButton icon="download" preset="primary"> Excel </VaButton>
                     </div> -->
+                    <VaButtonDropdown class="mr-2 flex space-x-4" preset="secondary" label="Export"
+                        border-color="primary">
+                        <VaButton icon="download" preset="primary" class="mr-6 mb-2"> PDF </VaButton>
+                        <VaButton icon="download" preset="primary" class="mr-6 mb-2"> Excel </VaButton>
+                    </VaButtonDropdown>
                 </div>
 
                 <VaDataTable :items="tableData" :columns="columns" class="va-table va-table--striped" v-if="!loading">
