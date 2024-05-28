@@ -7,7 +7,7 @@
         {{ message }}
     </VaAlert>
 
-    <VaAlert color="warning" icon="warning" class="mb-6" v-model="isWaringAlert">
+    <VaAlert color="warning" icon="warning" class="mb-6" v-model="isWaringAlert" closeable>
         It is in development
     </VaAlert>
 
@@ -26,7 +26,8 @@
                     <VaButtonDropdown class="mr-2 flex space-x-4" preset="secondary" label="Export"
                         border-color="primary">
                         <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportPdf"> PDF </VaButton>
-                        <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportPdf"> Excel </VaButton>
+                        <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportExcel"> Excel
+                        </VaButton>
                     </VaButtonDropdown>
                 </div>
 
@@ -250,7 +251,13 @@ export default defineComponent({
         getRecordIndex(index) {
             return (this.currentPage - 1) * this.itemsPerPage + index + 1;
         },
-        exportPdf(){
+        exportPdf() {
+            this.isWaringAlert = true;
+            setTimeout(() => {
+                this.isWaringAlert = false;
+            }, 2000);
+        },
+        exportExcel() {
             this.isWaringAlert = true;
             setTimeout(() => {
                 this.isWaringAlert = false;
