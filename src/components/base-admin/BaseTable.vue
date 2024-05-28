@@ -19,10 +19,6 @@
                     </VaInput>
                     <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
                     <VaButton @click="openModal" icon="add" v-show="showActions">Adicionar Item</VaButton>
-                    <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
-                        <VaButton icon="download" preset="primary"> PDF </VaButton>
-                        <VaButton icon="download" preset="primary"> Excel </VaButton>
-                    </div> -->
                     <VaButtonDropdown class="mr-2 flex space-x-4" preset="secondary" label="Export"
                         border-color="primary">
                         <VaButton icon="download" preset="primary" class="mr-6 mb-2"> PDF </VaButton>
