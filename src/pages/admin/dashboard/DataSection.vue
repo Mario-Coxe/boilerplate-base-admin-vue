@@ -39,7 +39,7 @@ const dashboardMetrics = computed<DashboardMetric[]>(() => [
   {
     id: 'openInvoices',
     title: 'Open invoices',
-    value: '$35,548',
+    value: '35,548',
     icon: 'mso-attach_money',
     changeText: '$1, 450',
     changeDirection: 'down',
