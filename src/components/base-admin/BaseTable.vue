@@ -18,7 +18,7 @@
 
                     </VaInput>
                     <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
-                    <VaButton @click="openModal" icon="add">Adicionar Item</VaButton>
+                    <VaButton @click="openModal" icon="add" v-show="showActions">Adicionar Item</VaButton>
                     <!-- <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end left">
                         <VaButton icon="download" preset="primary"> PDF </VaButton>
                         <VaButton icon="download" preset="primary"> Excel </VaButton>
@@ -54,7 +54,7 @@
 
 
                 <div class="pagination">
-                    <button @click="prevPage" :disabled="currentPage === 1" >Previous</button>
+                    <button @click="prevPage" :disabled="currentPage === 1">Previous</button>
                     <span>Page {{ currentPage }} of {{ totalPages }}</span>
                     <button @click="nextPage" :disabled="currentPage === totalPages">Next</button>
                 </div>
@@ -84,10 +84,6 @@ export default defineComponent({
             type: Array,
             required: true,
         },
-        loading: {
-            type: Boolean,
-            default: false,
-        },
         showActions: {
             type: Boolean,
             default: true,
@@ -110,6 +106,7 @@ export default defineComponent({
             isSucessAlert: false,
             isFailedAlert: false,
             message: '',
+            loading: false,
             tableData: [],
         };
     },
@@ -127,6 +124,8 @@ export default defineComponent({
     },
     methods: {
         async loadData() {
+
+            this.loading = true;
             const params = {
                 page: this.searchQuery ? 1 : this.currentPage,
                 perPage: this.searchQuery ? this.total : this.itemsPerPage,
@@ -137,6 +136,11 @@ export default defineComponent({
             this.tableData = response.data.data
             this.total = response.data.total
             this.totalPages = response.data.lastPage
+
+
+            setTimeout(() => {
+                this.loading = false;
+            }, 500);
         },
         openModal() {
             this.formData = this.isEditing ? { ...this.formData } : this.getInitialFormData();

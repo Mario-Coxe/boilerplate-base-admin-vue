@@ -1,6 +1,7 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :formColumns="formColumns" :loading="loading" :showActions="showActions" :service="luggageTypeService" />
+        <BaseTable :columns="columns" :formColumns="formColumns" :showActions="showActions"
+            :service="luggageTypeService" />
     </div>
 </template>
 
@@ -26,7 +27,6 @@ export default defineComponent({
                 { key: 'slug', label: 'Slug' },
             ],
             luggageTypeService,
-            loading: false,
             showActions: false,
         };
     }

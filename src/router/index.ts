@@ -18,13 +18,13 @@ const routes: Array<RouteRecordRaw> = [
       },
 
       {
-        name: 'users',
-        path: 'users',
+        name: 'luggage-types',
+        path: 'luggage-types',
         component: () => import('../pages/Modules/luggage/table/Luggage.vue'),
       },
       {
-        name: 'projects',
-        path: 'projects',
+        name: 'colors',
+        path: 'colors',
         component: () => import('../pages/Modules/colors/table/Colors.vue'),
       },
       {

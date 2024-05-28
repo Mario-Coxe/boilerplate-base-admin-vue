@@ -13,28 +13,28 @@ export default {
   routes: [
     {
       name: 'dashboard',
-      displayName: 'menu.dashboard',
+      displayName: 'Dashboard',
       meta: {
         icon: 'vuestic-iconset-dashboard',
       },
     },
     {
-      name: 'users',
-      displayName: 'menu.luggages',
+      name: 'luggage-types',
+      displayName: 'Luggages Type',
       meta: {
         icon: 'luggage',
       },
     },
     {
-      name: 'projects',
-      displayName: 'menu.projects',
+      name: 'colors',
+      displayName: 'Colors',
       meta: {
         icon: 'folder_shared',
       },
     },
      {
       name: 'driver',
-      displayName: 'menu.drivers',
+      displayName: 'Drivers',
       meta: {
         icon: 'folder_shared',
       },

@@ -1,7 +1,6 @@
 <template>
     <div>
-        <BaseTable :columns="columns" :formColumns="formColumns" :loading="loading" :showActions="showActions"
-            :service="driverService" />
+        <BaseTable :columns="columns" :formColumns="formColumns" :showActions="showActions" :service="driverService" />
     </div>
 </template>
 
@@ -27,7 +26,6 @@ export default defineComponent({
 
             ],
             driverService,
-            loading: false,
             showActions: false,
         };
     }
