@@ -25,7 +25,7 @@
                     </div> -->
                 </div>
 
-                <VaDataTable :items="tableData" :columns="columns" class="va-table-responsive" v-if="!loading">
+                <VaDataTable :items="tableData" :columns="columns" class="va-table va-table--striped" v-if="!loading">
                     <template #cell(index)="{ index }">
                         <span>{{ getRecordIndex(index) }}</span>
                     </template>

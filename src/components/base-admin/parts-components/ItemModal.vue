@@ -5,9 +5,10 @@
                 <VaInput v-model="formData[column.key]" :label="column.label" :required="column.required || false"
                     class="w-full" />
             </div>
-            <div class="modal-actions w-full">
-                <VaButton @click="closeModal" color="secondary">Cancelar</VaButton>
-                <VaButton @click="handleSubmit" type="submit">{{ isEditing ? 'Salvar' : 'Adicionar' }}</VaButton>
+            <div class="modal-actions w-full flex space-x-4">
+                <VaButton @click="closeModal" color="danger" class="mt-3">Cancelar</VaButton>
+                <VaButton @click="handleSubmit" type="submit" class="mt-3">{{ isEditing ? 'Salvar' : 'Adicionar' }}
+                </VaButton>
             </div>
         </VaForm>
     </VaModal>
