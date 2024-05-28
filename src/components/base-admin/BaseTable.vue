@@ -15,12 +15,17 @@
         <VaCard>
             <VaCardContent>
                 <div class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4 items-end">
-                    <VaInput v-model="searchQuery" placeholder="Search">
+                    <VaInput v-model="searchQuery" placeholder="Search" label="Search">
                         <template #prependInner>
                             <VaIcon name="search" color="secondary" size="small" />
                         </template>
-
                     </VaInput>
+
+                    <div class="max-w-xs">
+                        <VaSelect v-model="value" label="Filter by" :options="options" multiple searchable
+                            highlight-matched-text />
+                    </div>
+
                     <VaButton icon="update" color="success" @click="loadData"> Refresh </VaButton>
                     <VaButton @click="openModal" icon="add" v-show="showActions">Adicionar Item</VaButton>
                     <VaButtonDropdown class="mr-2 flex space-x-4" preset="secondary" label="Export"
@@ -29,6 +34,7 @@
                         <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportExcel"> Excel
                         </VaButton>
                     </VaButtonDropdown>
+
                 </div>
 
                 <VaDataTable :items="tableData" :columns="columns" class="va-table va-table--striped" v-if="!loading">
