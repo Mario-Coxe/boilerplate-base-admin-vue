@@ -7,6 +7,10 @@
         {{ message }}
     </VaAlert>
 
+    <VaAlert color="warning" icon="warning" class="mb-6" v-model="isWaringAlert">
+        It is in development
+    </VaAlert>
+
     <pdfexport ref="gridPdfExport">
         <VaCard>
             <VaCardContent>
@@ -21,8 +25,8 @@
                     <VaButton @click="openModal" icon="add" v-show="showActions">Adicionar Item</VaButton>
                     <VaButtonDropdown class="mr-2 flex space-x-4" preset="secondary" label="Export"
                         border-color="primary">
-                        <VaButton icon="download" preset="primary" class="mr-6 mb-2"> PDF </VaButton>
-                        <VaButton icon="download" preset="primary" class="mr-6 mb-2"> Excel </VaButton>
+                        <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportPdf"> PDF </VaButton>
+                        <VaButton icon="download" preset="primary" class="mr-6 mb-2" @click="exportPdf"> Excel </VaButton>
                     </VaButtonDropdown>
                 </div>
 
@@ -106,6 +110,7 @@ export default defineComponent({
             totalPages: 1,
             isSucessAlert: false,
             isFailedAlert: false,
+            isWaringAlert: false,
             message: '',
             loading: false,
             tableData: [],
@@ -245,6 +250,12 @@ export default defineComponent({
         getRecordIndex(index) {
             return (this.currentPage - 1) * this.itemsPerPage + index + 1;
         },
+        exportPdf(){
+            this.isWaringAlert = true;
+            setTimeout(() => {
+                this.isWaringAlert = false;
+            }, 2000);
+        }
     },
     created() {
         this.loadData();
