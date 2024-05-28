@@ -1,5 +1,6 @@
 <template>
   <div>
+    <h3 class="page-title font-bold">Colors</h3>
     <BaseTable
       :columns="columns"
       :formColumns="formColumns"

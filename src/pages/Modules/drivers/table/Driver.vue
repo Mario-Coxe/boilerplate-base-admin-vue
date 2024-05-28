@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 class="page-title font-bold">Drivers</h3>
         <BaseTable :columns="columns" :formColumns="formColumns" :showActions="showActions" :service="driverService" />
     </div>
 </template>

@@ -1,5 +1,6 @@
 <template>
     <div>
+        <h3 class="page-title font-bold">Luggage Type</h3>
         <BaseTable :columns="columns" :formColumns="formColumns" :showActions="showActions"
             :service="luggageTypeService" />
     </div>
