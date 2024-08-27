@@ -1,2 +1,2 @@
-# bolipleite-base-admin-vue
- Aqui temos um bolipleite(templeite) feito em vue
+# boilerplate-base-admin-vue
+ Aqui temos um boilerplate(templeite) feito em vue
